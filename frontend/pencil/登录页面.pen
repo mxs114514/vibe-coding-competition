@@ -1,0 +1,161 @@
+{
+  "version": "2.6",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bi8Au",
+      "x": 0,
+      "y": 0,
+      "name": "登录页面",
+      "clip": true,
+      "width": 375,
+      "height": 667,
+      "fill": "#FFF8E7",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "title",
+          "x": 37.5,
+          "y": 80,
+          "width": 300,
+          "height": 50,
+          "text": "🍳 欢迎来到温馨厨房",
+          "fontSize": 24,
+          "fontWeight": "bold",
+          "textAlign": "center",
+          "fill": "#D4A574"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "x": 37.5,
+          "y": 135,
+          "width": 300,
+          "height": 30,
+          "text": "让美食连接你我",
+          "fontSize": 14,
+          "textAlign": "center",
+          "fill": "#999999"
+        },
+        {
+          "type": "rectangle",
+          "id": "phoneInput",
+          "x": 37.5,
+          "y": 220,
+          "width": 300,
+          "height": 50,
+          "fill": "#FFFFFF",
+          "stroke": "#D4A574",
+          "strokeWidth": 2,
+          "cornerRadius": 25
+        },
+        {
+          "type": "text",
+          "id": "phonePlaceholder",
+          "x": 62.5,
+          "y": 233,
+          "width": 250,
+          "height": 24,
+          "text": "📱 请输入手机号",
+          "fontSize": 16,
+          "fill": "#CCCCCC"
+        },
+        {
+          "type": "rectangle",
+          "id": "codeInputBg",
+          "x": 37.5,
+          "y": 290,
+          "width": 180,
+          "height": 50,
+          "fill": "#FFFFFF",
+          "stroke": "#D4A574",
+          "strokeWidth": 2,
+          "cornerRadius": 25
+        },
+        {
+          "type": "text",
+          "id": "codePlaceholder",
+          "x": 62.5,
+          "y": 303,
+          "width": 130,
+          "height": 24,
+          "text": "🔐 验证码",
+          "fontSize": 16,
+          "fill": "#CCCCCC"
+        },
+        {
+          "type": "rectangle",
+          "id": "getCodeBtn",
+          "x": 232.5,
+          "y": 290,
+          "width": 105,
+          "height": 50,
+          "fill": "#D4A574",
+          "cornerRadius": 25
+        },
+        {
+          "type": "text",
+          "id": "getCodeText",
+          "x": 232.5,
+          "y": 303,
+          "width": 105,
+          "height": 24,
+          "text": "获取验证码",
+          "fontSize": 14,
+          "fontWeight": "500",
+          "textAlign": "center",
+          "fill": "#FFFFFF"
+        },
+        {
+          "type": "rectangle",
+          "id": "loginBtn",
+          "x": 37.5,
+          "y": 380,
+          "width": 300,
+          "height": 50,
+          "fill": "#D4A574",
+          "cornerRadius": 25
+        },
+        {
+          "type": "text",
+          "id": "loginText",
+          "x": 37.5,
+          "y": 393,
+          "width": 300,
+          "height": 24,
+          "text": "🍽️ 开始美食之旅",
+          "fontSize": 18,
+          "fontWeight": "bold",
+          "textAlign": "center",
+          "fill": "#FFFFFF"
+        },
+        {
+          "type": "text",
+          "id": "decorText1",
+          "x": 37.5,
+          "y": 500,
+          "width": 300,
+          "height": 80,
+          "text": "🥘 🍜 🍲 🥗 🍱",
+          "fontSize": 32,
+          "textAlign": "center",
+          "fill": "#D4A574",
+          "opacity": 0.3
+        },
+        {
+          "type": "text",
+          "id": "footerText",
+          "x": 37.5,
+          "y": 600,
+          "width": 300,
+          "height": 30,
+          "text": "用心烹饪，温暖相伴",
+          "fontSize": 12,
+          "textAlign": "center",
+          "fill": "#999999"
+        }
+      ]
+    }
+  ]
+}
