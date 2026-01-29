@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// 用户表
+model User {
+  id        BigInt   @id @default(autoincrement())
+  username  String   @unique @db.VarChar(50)
+  phone     String   @unique @db.VarChar(20)
+  password  String   @db.VarChar(255)
+  heightCm  Int?     @map("height_cm")
+  weightKg  Decimal? @db.Decimal(5, 2) @map("weight_kg")
+  gender    Int?     @db.TinyInt
+  createdAt DateTime @default(now()) @map("created_at")
+
+  userIngredients       UserIngredient[]
+  recipes               Recipe[]                @relation("RecipeAuthor")
+  recommendations       RecipeRecommendation[]
+  triedRecipes          RecipeTried[]
+  favoriteRecipes       UserFavoriteRecipe[]
+  shoppingLists         ShoppingList[]
+
+  @@map("user")
+}
+
+// 标准食材库
+model Ingredient {
+  id               BigInt   @id @default(autoincrement())
+  name             String   @db.VarChar(100)
+  category         Int      @db.TinyInt
+  unit             String   @default("份") @db.VarChar(20)
+  caloriesPer100g  Decimal? @db.Decimal(8, 2) @map("calories_per_100g")
+  proteinPer100g   Decimal? @db.Decimal(8, 2) @map("protein_per_100g")
+  carbsPer100g     Decimal? @db.Decimal(8, 2) @map("carbs_per_100g")
+  fatPer100g       Decimal? @db.Decimal(8, 2) @map("fat_per_100g")
+  allergens        String?  @db.Text
+  imageUrl         String?  @db.VarChar(255) @map("image_url")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  userIngredients UserIngredient[]
+
+  @@map("ingredient")
+}
+
+// 用户食材记录
+model UserIngredient {
+  id           BigInt     @id @default(autoincrement())
+  userId       BigInt     @map("user_id")
+  ingredientId BigInt     @map("ingredient_id")
+  amount       Decimal    @db.Decimal(10, 2)
+  unit         String     @db.VarChar(20)
+  status       Int        @db.TinyInt
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@map("user_ingredient")
+}
+
+// 菜谱表
+model Recipe {
+  id                   BigInt   @id @default(autoincrement())
+  name                 String   @db.VarChar(100)
+  cuisine              Int      @db.TinyInt
+  tasteBase            Int      @db.TinyInt @map("taste_base")
+  spiceLevel           Int      @db.TinyInt @map("spice_level")
+  cookingTimeMinutes   Int      @map("cooking_time_minutes")
+  difficulty           Int      @db.TinyInt
+  ingredientsJson      String   @db.Text @map("ingredients_json")
+  stepsText            String   @db.Text @map("steps_text")
+  nutritionAnalysis    Json?    @map("nutrition_analysis")
+  estimatedCostCny     Decimal? @db.Decimal(6, 2) @map("estimated_cost_cny")
+  coverImageUrl        String?  @db.VarChar(255) @map("cover_image_url")
+  sourceType           Int      @db.TinyInt @map("source_type")
+  authorUserId         BigInt?  @map("author_user_id")
+  aiGenerated          Int      @default(0) @db.TinyInt @map("ai_generated")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  author              User?                  @relation("RecipeAuthor", fields: [authorUserId], references: [id], onDelete: SetNull)
+  recommendations     RecipeRecommendation[]
+  triedRecipes        RecipeTried[]
+  favoriteRecipes     UserFavoriteRecipe[]
+
+  @@map("recipe")
+}
+
+// AI推荐记录
+model RecipeRecommendation {
+  id                  BigInt   @id @default(autoincrement())
+  userId              BigInt   @map("user_id")
+  recommendedRecipeId BigInt   @map("recommended_recipe_id")
+  mealTime            Int      @db.TinyInt @map("meal_time")
+  budgetLimit         Decimal? @db.Decimal(8, 2) @map("budget_limit")
+  isHealthyForUser    Int      @default(0) @db.TinyInt @map("is_healthy_for_user")
+  reason              String?  @db.Text
+  generatedAt         DateTime @default(now()) @map("generated_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recommendedRecipeId], references: [id], onDelete: Cascade)
+
+  @@map("recipe_recommendation")
+}
+
+// 用户尝试记录
+model RecipeTried {
+  id       BigInt   @id @default(autoincrement())
+  userId   BigInt   @map("user_id")
+  recipeId BigInt   @map("recipe_id")
+  rating   Int      @db.TinyInt
+  comment  String?  @db.Text
+  triedAt  DateTime @default(now()) @map("tried_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("recipe_tried")
+}
+
+// 用户收藏菜谱
+model UserFavoriteRecipe {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @map("user_id")
+  recipeId  BigInt   @map("recipe_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId])
+  @@map("user_favorite_recipe")
+}
+
+// 购物清单
+model ShoppingList {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @map("user_id")
+  name      String   @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user  User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items ShoppingListItem[]
+
+  @@map("shopping_list")
+}
+
+// 购物清单条目
+model ShoppingListItem {
+  id             BigInt  @id @default(autoincrement())
+  shoppingListId BigInt  @map("shopping_list_id")
+  ingredientName String  @db.VarChar(100) @map("ingredient_name")
+  amount         String  @db.VarChar(50)
+  unit           String  @db.VarChar(20)
+  category       String? @db.VarChar(50)
+  note           String? @db.Text
+
+  shoppingList ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+
+  @@map("shopping_list_item")
+}

@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+
 import CartModal from '@/components/CartModal.vue'
 import FridgeModal from '@/components/FridgeModal.vue'
 import RecipeModal from '@/components/RecipeModal.vue'
 import TableModal from '@/components/TableModal.vue'
+import { useAuthStore } from '@/stores/auth'
 import { useNavigationStore } from '@/stores/navigation'
 import { useThemeStore } from '@/stores/theme'
 
 const navigationStore = useNavigationStore()
 const themeStore = useThemeStore()
+const authStore = useAuthStore()
 
 // 图片预加载
 onMounted(() => {
@@ -31,7 +34,18 @@ onMounted(() => {
 <template>
   <div class="home-container">
     <!-- 顶部栏 -->
-    <header class="fixed top-0 left-0 right-0 z-40 px-6 py-4 flex justify-end items-center">
+    <header class="fixed top-0 left-0 right-0 z-40 px-6 py-4 flex justify-end items-center gap-4">
+      <!-- 退出登录按钮 -->
+      <button @click="authStore.logout()"
+        class="p-3 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group"
+        title="退出登录">
+        <svg class="w-6 h-6 text-gray-600 dark:text-gray-300 group-hover:text-red-500 transition-colors" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+      </button>
+
       <!-- 深色模式切换按钮 -->
       <button @click="themeStore.toggleTheme()"
         class="p-3 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
@@ -50,47 +64,26 @@ onMounted(() => {
     </header>
 
     <!-- 主场景：厨房背景 -->
-    <main
-      class="kitchen-scene min-h-screen relative overflow-hidden transition-all duration-500"
+    <main class="kitchen-scene min-h-screen relative overflow-hidden transition-all duration-500"
       :class="themeStore.isDark ? 'dark-kitchen' : 'light-kitchen'">
 
       <!-- 桌面端：绝对定位的导航元素 -->
       <div class="navigation-elements hidden md:block">
         <!-- 冰箱 -->
-        <img
-          src="/冰箱.png"
-          alt="冰箱"
-          @click="navigationStore.openModal('fridge')"
-          class="nav-image fridge-position"
-          title="冰箱 - 管理食材"
-        />
+        <img src="/冰箱.png" alt="冰箱" @click="navigationStore.openModal('fridge')" class="nav-image fridge-position"
+          title="冰箱 - 管理食材" />
 
         <!-- 餐桌 -->
-        <img
-          src="/餐桌.png"
-          alt="餐桌"
-          @click="navigationStore.openModal('table')"
-          class="nav-image table-position"
-          title="餐桌 - 今天做什么"
-        />
+        <img src="/餐桌.png" alt="餐桌" @click="navigationStore.openModal('table')" class="nav-image table-position"
+          title="餐桌 - 今天做什么" />
 
         <!-- 菜谱 -->
-        <img
-          src="/菜单.png"
-          alt="菜谱"
-          @click="navigationStore.openModal('recipe')"
-          class="nav-image recipe-position"
-          title="菜谱 - 生成与收藏"
-        />
+        <img src="/菜单.png" alt="菜谱" @click="navigationStore.openModal('recipe')" class="nav-image recipe-position"
+          title="菜谱 - 生成与收藏" />
 
         <!-- 购物车 -->
-        <img
-          src="/购物车.png"
-          alt="购物车"
-          @click="navigationStore.openModal('cart')"
-          class="nav-image cart-position"
-          title="购物车 - 购物清单"
-        />
+        <img src="/购物车.png" alt="购物车" @click="navigationStore.openModal('cart')" class="nav-image cart-position"
+          title="购物车 - 购物清单" />
       </div>
 
       <!-- 移动端：网格布局的导航元素 -->

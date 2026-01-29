@@ -10,7 +10,7 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     name: 'home',
     component: HomeView,
-    meta: { requiresAuth: false }, // 需要登录
+    meta: { requiresAuth: true }, // 需要登录
   },
   {
     path: '/login',
