@@ -1,0 +1,167 @@
+{
+  "version": "2.6",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bi8Au",
+      "x": 0,
+      "y": 0,
+      "name": "登录页面",
+      "clip": true,
+      "width": 1200,
+      "height": 800,
+      "fill": "#FFF8E7",
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "id": "loginBox",
+          "x": 400,
+          "y": 150,
+          "width": 400,
+          "height": 500,
+          "fill": "#FFFFFF",
+          "stroke": "#D4A574",
+          "strokeWidth": 2,
+          "cornerRadius": 20
+        },
+        {
+          "type": "label",
+          "id": "title",
+          "x": 500,
+          "y": 200,
+          "width": 200,
+          "height": 60,
+          "content": "登录",
+          "fontSize": 36,
+          "textAlign": "center",
+          "color": "#D4A574"
+        },
+        {
+          "type": "label",
+          "id": "phoneLabel",
+          "x": 450,
+          "y": 290,
+          "width": 300,
+          "height": 24,
+          "content": "手机号",
+          "fontSize": 14,
+          "color": "#666666"
+        },
+        {
+          "type": "rectangle",
+          "id": "phoneInput",
+          "x": 450,
+          "y": 320,
+          "width": 300,
+          "height": 45,
+          "fill": "#FFFFFF",
+          "stroke": "#D4A574",
+          "strokeWidth": 1,
+          "cornerRadius": 8
+        },
+        {
+          "type": "label",
+          "id": "phonePlaceholder",
+          "x": 465,
+          "y": 332,
+          "width": 270,
+          "height": 20,
+          "content": "请输入手机号",
+          "fontSize": 14,
+          "color": "#CCCCCC"
+        },
+        {
+          "type": "label",
+          "id": "codeLabel",
+          "x": 450,
+          "y": 385,
+          "width": 300,
+          "height": 24,
+          "content": "验证码",
+          "fontSize": 14,
+          "color": "#666666"
+        },
+        {
+          "type": "rectangle",
+          "id": "codeInputBg",
+          "x": 450,
+          "y": 415,
+          "width": 180,
+          "height": 45,
+          "fill": "#FFFFFF",
+          "stroke": "#D4A574",
+          "strokeWidth": 1,
+          "cornerRadius": 8
+        },
+        {
+          "type": "label",
+          "id": "codePlaceholder",
+          "x": 465,
+          "y": 427,
+          "width": 150,
+          "height": 20,
+          "content": "请输入验证码",
+          "fontSize": 14,
+          "color": "#CCCCCC"
+        },
+        {
+          "type": "rectangle",
+          "id": "getCodeBtn",
+          "x": 645,
+          "y": 415,
+          "width": 105,
+          "height": 45,
+          "fill": "#D4A574",
+          "cornerRadius": 8
+        },
+        {
+          "type": "label",
+          "id": "getCodeText",
+          "x": 645,
+          "y": 427,
+          "width": 105,
+          "height": 20,
+          "content": "获取验证码",
+          "fontSize": 14,
+          "textAlign": "center",
+          "color": "#FFFFFF"
+        },
+        {
+          "type": "rectangle",
+          "id": "loginBtn",
+          "x": 450,
+          "y": 500,
+          "width": 300,
+          "height": 45,
+          "fill": "#D4A574",
+          "cornerRadius": 8
+        },
+        {
+          "type": "label",
+          "id": "loginText",
+          "x": 450,
+          "y": 512,
+          "width": 300,
+          "height": 20,
+          "content": "登录",
+          "fontSize": 16,
+          "textAlign": "center",
+          "color": "#FFFFFF"
+        },
+        {
+          "type": "label",
+          "id": "footerText",
+          "x": 400,
+          "y": 680,
+          "width": 400,
+          "height": 30,
+          "content": "用心烹饪，温暖相伴",
+          "fontSize": 12,
+          "textAlign": "center",
+          "color": "#999999"
+        }
+      ]
+    }
+  ]
+}
