@@ -58,14 +58,39 @@ async function handleGetCode() {
   try {
     const response = await getCaptcha({ phone: phone.value })
 
-    if (response.code === 200) {
-      // 开发环境下显示验证码
-      if (response.data?.verifyCode) {
-        console.log('验证码:', response.data.verifyCode)
-        // 开发环境自动填充验证码
-        if (import.meta.env.DEV) {
-          code.value = response.data.verifyCode
-        }
+    if (response.success) {
+      // 弹出可爱风格的验证码弹窗
+      const verifyCode = response.data
+
+      // 创建一个自定义弹窗 DOM 并挂载
+      const dialog = document.createElement('div')
+      dialog.className = 'fixed inset-0 flex items-center justify-center z-50 bg-black/20 backdrop-blur-sm'
+      dialog.innerHTML = `
+        <div class="bg-white rounded-[24px] p-6 shadow-xl transform transition-all animate-bounce-in" style="min-width: 300px; border: 4px solid #FFD086;">
+          <div class="text-center">
+            <div class="text-4xl mb-2">📩</div>
+            <h3 class="text-xl font-bold text-[#8B5E3C] mb-2">验证码来啦!</h3>
+            <div class="text-3xl font-mono font-bold text-[#FF9F1C] tracking-widest my-4 py-2 bg-[#FFF8E7] rounded-lg border-dashed border-2 border-[#FFD086]">
+              ${verifyCode}
+            </div>
+            <p class="text-sm text-[#999] mb-6">请记住这个数字哦~</p>
+            <button id="close-dialog-btn" class="w-full py-3 rounded-xl bg-[#FFD086] hover:bg-[#FFC058] text-[#8B5E3C] font-bold transition-transform active:scale-95 shadow-md">
+              我知道啦 (关闭)
+            </button>
+          </div>
+        </div>
+      `
+      document.body.appendChild(dialog)
+
+      // 绑定关闭事件
+      const btn = dialog.querySelector('#close-dialog-btn')
+      btn?.addEventListener('click', () => {
+        document.body.removeChild(dialog)
+      })
+
+      // 开发环境自动填充验证码
+      if (import.meta.env.DEV) {
+        code.value = String(verifyCode)
       }
 
       // 启动倒计时
@@ -77,7 +102,7 @@ async function handleGetCode() {
         }
       }, 1000)
     } else {
-      loginError.value = response.message || '获取验证码失败'
+      loginError.value = response.errorMsg || '获取验证码失败'
     }
   } catch (error: any) {
     loginError.value = error.message || '获取验证码失败，请稍后重试'
@@ -145,8 +170,8 @@ function clearCodeError() {
           <label class="block text-sm mb-2" style="color: #666666">手机号</label>
           <input v-model="phone" type="tel" maxlength="11" placeholder="请输入手机号"
             class="w-full h-[45px] px-4 rounded-lg border focus:outline-none focus:ring-2 transition-all" :class="phoneError
-                ? 'border-red-500 focus:ring-red-200'
-                : 'focus:ring-[#D4A574]/30'
+              ? 'border-red-500 focus:ring-red-200'
+              : 'focus:ring-[#D4A574]/30'
               " style="border-color: #d4a574" @focus="clearPhoneError" />
           <p v-if="phoneError" class="text-red-500 text-xs mt-1">
             {{ phoneError }}
@@ -159,13 +184,13 @@ function clearCodeError() {
           <div class="flex gap-3">
             <input v-model="code" type="text" maxlength="6" placeholder="请输入验证码"
               class="flex-1 h-[45px] px-4 rounded-lg border focus:outline-none focus:ring-2 transition-all" :class="codeError
-                  ? 'border-red-500 focus:ring-red-200'
-                  : 'focus:ring-[#D4A574]/30'
+                ? 'border-red-500 focus:ring-red-200'
+                : 'focus:ring-[#D4A574]/30'
                 " style="border-color: #d4a574; width: 180px" @focus="clearCodeError" />
             <button type="button" :disabled="!canGetCode" @click="handleGetCode"
               class="h-[45px] px-4 rounded-lg text-white text-sm font-medium transition-all" :class="canGetCode
-                  ? 'hover:opacity-90 active:scale-95'
-                  : 'opacity-50 cursor-not-allowed'
+                ? 'hover:opacity-90 active:scale-95'
+                : 'opacity-50 cursor-not-allowed'
                 " style="background-color: #d4a574; width: 105px">
               {{ codeButtonText }}
             </button>
@@ -183,8 +208,8 @@ function clearCodeError() {
         <!-- 登录按钮 -->
         <button type="submit" :disabled="!canLogin"
           class="w-full h-[45px] rounded-lg text-white text-base font-medium transition-all" :class="canLogin
-              ? 'hover:opacity-90 active:scale-[0.98]'
-              : 'opacity-50 cursor-not-allowed'
+            ? 'hover:opacity-90 active:scale-[0.98]'
+            : 'opacity-50 cursor-not-allowed'
             " style="background-color: #d4a574">
           <span v-if="!authStore.isLoading">登录</span>
           <span v-else>登录中...</span>

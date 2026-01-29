@@ -10,7 +10,7 @@ import { storage } from '@/utils/storage'
 
 // 创建 axios 实例
 const api: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081/api',
+  baseURL: '/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ api.interceptors.response.use(
           console.error('服务器错误')
           break
         default:
-          console.error(data?.message || '请求失败')
+          console.error(data?.errorMsg || '请求失败')
       }
 
       return Promise.reject(data || error)

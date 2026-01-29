@@ -24,18 +24,23 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const response = await loginApi(loginData)
 
-      if (response.code === 200 && response.data) {
-        // 保存 token 和用户信息
-        token.value = response.data.token
-        user.value = response.data.user
+      // 根据新的接口结构判断成功
+      if (response.success) {
+        // FIXME: 后端目前只返回了字符串 "登录成功"，没有返回 Token 和 User 对象
+        // 临时模拟一个 token，或者等待后端完善
+        // 假设 data 为 '登录成功'，这里我们需要做一个假的 token 才能让 isLoggedIn 为 true
+        const fakeToken = 'temp-token-' + Date.now()
 
-        storage.setToken(response.data.token)
-        storage.setUser(response.data.user)
+        token.value = fakeToken
+        // user.value = { ... } // 这里还没有用户信息
+
+        storage.setToken(fakeToken)
+        // storage.setUser(...)
 
         // 跳转到首页
         router.push('/')
       } else {
-        throw new Error(response.message || '登录失败')
+        throw new Error(response.errorMsg || '登录失败')
       }
     } finally {
       isLoading.value = false
@@ -88,6 +93,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     logout,
     refreshUser,
-    initAuth
+    initAuth,
   }
 })
