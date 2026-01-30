@@ -26,16 +26,15 @@ export const useAuthStore = defineStore('auth', () => {
 
       // 根据新的接口结构判断成功
       if (response.success) {
-        // FIXME: 后端目前只返回了字符串 "登录成功"，没有返回 Token 和 User 对象
-        // 临时模拟一个 token，或者等待后端完善
-        // 假设 data 为 '登录成功'，这里我们需要做一个假的 token 才能让 isLoggedIn 为 true
-        const fakeToken = 'temp-token-' + Date.now()
+        const { token: accessToken, user: userInfo } = response.data
 
-        token.value = fakeToken
-        // user.value = { ... } // 这里还没有用户信息
+        // 更新状态
+        token.value = accessToken
+        user.value = userInfo
 
-        storage.setToken(fakeToken)
-        // storage.setUser(...)
+        // 持久化存储
+        storage.setToken(accessToken)
+        storage.setUser(userInfo)
 
         // 跳转到首页
         router.push('/')

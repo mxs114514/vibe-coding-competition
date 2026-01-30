@@ -15,7 +15,7 @@ const showEditForm = ref(false)
 const formData = ref({
   ingredientId: 0,
   name: '',
-  amount: 1,
+  amount: undefined as number | undefined,
   unit: '',
   status: IngredientStatus.AVAILABLE,
   category: IngredientCategory.VEGETABLE
@@ -40,8 +40,8 @@ const openAddForm = () => {
   formData.value = {
     ingredientId: 0,
     name: '',
-    amount: 1,
-    unit: '个',
+    amount: undefined,
+    unit: '',
     status: IngredientStatus.AVAILABLE,
     category: IngredientCategory.VEGETABLE
   }
@@ -50,12 +50,20 @@ const openAddForm = () => {
 
 const handleAdd = async () => {
   try {
-    await ingredientStore.addIngredient({
-      ingredientId: formData.value.ingredientId || Date.now(),
+    // 如果有 ID 使用 ID，否则使用名称
+    const payload: any = {
       amount: formData.value.amount,
       unit: formData.value.unit,
-      status: formData.value.status
-    })
+      category: Number(formData.value.category)
+    }
+
+    if (formData.value.ingredientId) {
+      payload.ingredientId = formData.value.ingredientId
+    } else {
+      payload.name = formData.value.name
+    }
+
+    await ingredientStore.addIngredient(payload)
     showAddForm.value = false
   } catch (error) {
     alert('添加失败，请重试')
@@ -81,7 +89,7 @@ const handleEdit = async () => {
     await ingredientStore.updateIngredient(formData.value.ingredientId, {
       amount: formData.value.amount,
       unit: formData.value.unit,
-      status: formData.value.status
+      category: Number(formData.value.category)
     })
     showEditForm.value = false
     ingredientStore.setEditingId(null)
@@ -151,34 +159,21 @@ onMounted(() => {
 
         <!-- 筛选按钮组 -->
         <div class="flex flex-wrap gap-2">
-          <!-- 状态筛选 -->
-          <button @click="handleStatusFilter(undefined)"
-            :class="[ingredientStore.statusFilter === undefined ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300']"
-            class="px-3 py-1 rounded-full text-sm font-medium transition-colors">
-            全部
-          </button>
-          <button @click="handleStatusFilter(IngredientStatus.AVAILABLE)"
-            :class="[ingredientStore.statusFilter === IngredientStatus.AVAILABLE ? 'bg-green-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300']"
-            class="px-3 py-1 rounded-full text-sm font-medium transition-colors">
-            已有
-          </button>
-          <button @click="handleStatusFilter(IngredientStatus.NEEDED)"
-            :class="[ingredientStore.statusFilter === IngredientStatus.NEEDED ? 'bg-red-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300']"
-            class="px-3 py-1 rounded-full text-sm font-medium transition-colors">
-            缺少
-          </button>
-
           <!-- 分类筛选 -->
-          <select :value="ingredientStore.categoryFilter"
-            @change="handleCategoryFilter(($event.target as HTMLSelectElement).value ? Number(($event.target as HTMLSelectElement).value) : undefined)"
-            class="px-3 py-1 rounded-full text-sm font-medium border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300">
-            <option :value="undefined">全部分类</option>
-            <option :value="IngredientCategory.VEGETABLE">🥬 蔬菜</option>
-            <option :value="IngredientCategory.MEAT">🥩 肉类</option>
-            <option :value="IngredientCategory.SEAFOOD">🦐 海鲜</option>
-            <option :value="IngredientCategory.STAPLE">🍚 主食</option>
-            <option :value="IngredientCategory.SEASONING">🧂 调味料</option>
-          </select>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">分类筛选:</span>
+            <select :value="ingredientStore.categoryFilter"
+              @change="handleCategoryFilter(($event.target as HTMLSelectElement).value ? Number(($event.target as HTMLSelectElement).value) : undefined)"
+              class="px-3 py-1 rounded-full text-sm font-medium border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+              <option value="">全部</option>
+              <option :value="IngredientCategory.VEGETABLE">🥬 蔬菜</option>
+              <option :value="IngredientCategory.MEAT">🥩 肉类</option>
+              <option :value="IngredientCategory.SEAFOOD">🦐 海鲜</option>
+              <option :value="IngredientCategory.STAPLE">🍚 主食</option>
+              <option :value="IngredientCategory.SEASONING">🧂 调味料</option>
+              <option :value="IngredientCategory.OTHER">📦 其他</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -241,13 +236,7 @@ onMounted(() => {
                   class="px-2 py-0.5 text-xs rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
                   {{ ingredient.categoryName }}
                 </span>
-                <span :class="[
-                  ingredient.status === IngredientStatus.AVAILABLE
-                    ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-                    : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
-                ]" class="px-2 py-0.5 text-xs rounded-full">
-                  {{ ingredient.statusName }}
-                </span>
+                <!-- 状态标签已移除，因为冰箱里的食材默认都是已有的 -->
               </div>
               <p class="text-sm text-gray-600 dark:text-gray-400">
                 数量: {{ ingredient.amount }} {{ ingredient.unit }}
@@ -286,26 +275,32 @@ onMounted(() => {
               <input v-model="formData.name" type="text" placeholder="请输入食材名称"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-gray-100" />
             </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">分类</label>
+              <select v-model.number="formData.category"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-gray-100">
+                <option :value="IngredientCategory.VEGETABLE">🥬 蔬菜</option>
+                <option :value="IngredientCategory.MEAT">🥩 肉类</option>
+                <option :value="IngredientCategory.SEAFOOD">🦐 海鲜</option>
+                <option :value="IngredientCategory.STAPLE">🍚 主食</option>
+                <option :value="IngredientCategory.SEASONING">🧂 调味料</option>
+                <option :value="IngredientCategory.OTHER">📦 其他</option>
+              </select>
+            </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">数量</label>
-                <input v-model.number="formData.amount" type="number" min="0" step="0.1"
+                <input v-model.number="formData.amount" type="number" min="0" step="1"
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-gray-100" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">单位</label>
-                <input v-model="formData.unit" type="text" placeholder="个/斤/袋"
+                <input v-model="formData.unit" type="text" placeholder="个/支/颗/克"
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-gray-100" />
+                <p class="text-xs text-gray-500 mt-1">称重食材建议用克</p>
               </div>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">状态</label>
-              <select v-model.number="formData.status"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-gray-100">
-                <option :value="IngredientStatus.AVAILABLE">已有</option>
-                <option :value="IngredientStatus.NEEDED">缺少</option>
-              </select>
-            </div>
+            <!-- 去掉状态选择 -->
           </div>
           <div class="flex gap-3 mt-6">
             <button @click="showAddForm = false"
@@ -330,6 +325,18 @@ onMounted(() => {
               <input v-model="formData.name" type="text" disabled
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-400" />
             </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">分类</label>
+              <select v-model.number="formData.category"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-gray-100">
+                <option :value="IngredientCategory.VEGETABLE">🥬 蔬菜</option>
+                <option :value="IngredientCategory.MEAT">🥩 肉类</option>
+                <option :value="IngredientCategory.SEAFOOD">🦐 海鲜</option>
+                <option :value="IngredientCategory.STAPLE">🍚 主食</option>
+                <option :value="IngredientCategory.SEASONING">🧂 调味料</option>
+                <option :value="IngredientCategory.OTHER">📦 其他</option>
+              </select>
+            </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">数量</label>
@@ -342,14 +349,7 @@ onMounted(() => {
                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-gray-100" />
               </div>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">状态</label>
-              <select v-model.number="formData.status"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 dark:bg-gray-700 dark:text-gray-100">
-                <option :value="IngredientStatus.AVAILABLE">已有</option>
-                <option :value="IngredientStatus.NEEDED">缺少</option>
-              </select>
-            </div>
+            <!-- 状态编辑已移除，由后端自动计算 -->
           </div>
           <div class="flex gap-3 mt-6">
             <button @click="showEditForm = false; ingredientStore.setEditingId(null)"

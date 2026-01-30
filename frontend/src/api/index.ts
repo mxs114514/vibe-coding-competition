@@ -35,7 +35,16 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     // 直接返回 data 部分
-    return response.data
+    const res = response.data
+    // 兼容后端返回格式 (如果后端返回了 code 但没有 success 字段)
+    if (res && res.code !== undefined && res.success === undefined) {
+      res.success = res.code === 200
+      // 如果没有 errorMsg，可以使用 message
+      if (!res.errorMsg) {
+        res.errorMsg = res.message
+      }
+    }
+    return res
   },
   (error: AxiosError<ApiError>) => {
     // 处理 HTTP 错误

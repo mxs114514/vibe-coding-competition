@@ -170,39 +170,44 @@ onMounted(() => {
   cursor: pointer;
   pointer-events: auto;
   transition: transform 0.3s ease, filter 0.3s ease;
+  transform: translate(-50%, -50%);
 }
 
 .nav-image:hover {
-  transform: scale(1.1);
+  transform: translate(-50%, -50%) scale(1.1);
   filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
 }
 
 .nav-image:active {
-  transform: scale(1.05);
+  transform: translate(-50%, -50%) scale(1.05);
 }
 
 /* 冰箱位置 */
-.fridge-position {
-  left: 10%;
-  top: 30%;
+.nav-image.fridge-position {
+  left: 16.67%;
+  top: 60%;
+  width: 700px;
+  /* 占满左侧1/3 */
 }
 
 /* 餐桌位置 */
-.table-position {
-  left: 40%;
-  top: 50%;
+.nav-image.table-position {
+  left: 50%;
+  top: 75%;
+  width: 400px;
 }
 
 /* 菜谱位置 */
-.recipe-position {
-  right: 15%;
-  top: 20%;
+.nav-image.recipe-position {
+  left: 83.33%;
+  top: 25%;
+  width: 300px;
 }
 
 /* 购物车位置 */
 .cart-position {
-  right: 10%;
-  bottom: 15%;
+  left: 83.33%;
+  top: 75%;
 }
 
 /* 移动端导航项 */

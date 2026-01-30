@@ -1,16 +1,17 @@
 // 食材分类枚举
 export enum IngredientCategory {
-  VEGETABLE = 1,    // 蔬菜
-  MEAT = 2,         // 肉类
-  SEAFOOD = 3,      // 海鲜
-  STAPLE = 4,       // 主食
-  SEASONING = 5     // 调味料
+  VEGETABLE = 1, // 蔬菜
+  MEAT = 2, // 肉类
+  SEAFOOD = 3, // 海鲜
+  STAPLE = 4, // 主食
+  SEASONING = 5, // 调味料
+  OTHER = 6, // 其他
 }
 
 // 食材状态枚举
 export enum IngredientStatus {
-  AVAILABLE = 1,    // 已有
-  NEEDED = 2        // 缺少
+  AVAILABLE = 1, // 已有
+  NEEDED = 2, // 缺少
 }
 
 // 分类名称映射
@@ -19,13 +20,14 @@ export const CATEGORY_NAMES: Record<IngredientCategory, string> = {
   [IngredientCategory.MEAT]: '肉类',
   [IngredientCategory.SEAFOOD]: '海鲜',
   [IngredientCategory.STAPLE]: '主食',
-  [IngredientCategory.SEASONING]: '调味料'
+  [IngredientCategory.SEASONING]: '调味料',
+  [IngredientCategory.OTHER]: '其他',
 }
 
 // 状态名称映射
 export const STATUS_NAMES: Record<IngredientStatus, string> = {
   [IngredientStatus.AVAILABLE]: '已有',
-  [IngredientStatus.NEEDED]: '缺少'
+  [IngredientStatus.NEEDED]: '缺少',
 }
 
 // 用户食材信息
@@ -56,10 +58,12 @@ export interface UserIngredientListResponse {
 
 // 添加食材请求
 export interface AddIngredientRequest {
-  ingredientId: number
+  ingredientId?: number
+  name?: string
   amount: number
   unit?: string
   status?: IngredientStatus
+  category?: IngredientCategory
 }
 
 // 批量添加食材请求
@@ -73,9 +77,10 @@ export interface BatchAddIngredientRequest {
 
 // 更新食材请求
 export interface UpdateIngredientRequest {
-  amount: number
-  unit: string
-  status: IngredientStatus
+  amount?: number
+  unit?: string
+  status?: IngredientStatus
+  category?: IngredientCategory
 }
 
 // 批量删除请求

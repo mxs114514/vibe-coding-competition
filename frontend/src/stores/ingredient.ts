@@ -17,15 +17,13 @@ export const useIngredientStore = defineStore('ingredient', () => {
   const filteredIngredients = computed(() => {
     let result = ingredients.value
 
+    // 默认只显示数量 > 0 的食材 (即“已有”)
+    result = result.filter((item) => item.amount > 0)
+
     // 搜索过滤
     if (searchKeyword.value) {
       const keyword = searchKeyword.value.toLowerCase()
       result = result.filter((item) => item.name.toLowerCase().includes(keyword))
-    }
-
-    // 状态过滤
-    if (statusFilter.value !== undefined) {
-      result = result.filter((item) => item.status === statusFilter.value)
     }
 
     // 分类过滤

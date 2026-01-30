@@ -7,7 +7,17 @@
       "Bash(findstr:*)",
       "Bash(curl:*)",
       "Bash(test:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(tree:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(mysql:*)",
+      "Bash(npx prisma generate)",
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(npx prisma db push:*)",
+      "Bash(set DATABASE_URL:*)",
+      "Bash(npm install @prisma/adapter-mysql mysql2)",
+      "Bash(npm install mysql2)",
+      "Bash(npm install mysql2 @prisma/adapter-mysql)"
     ]
   }
 }

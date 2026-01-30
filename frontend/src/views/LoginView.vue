@@ -60,7 +60,7 @@ async function handleGetCode() {
 
     if (response.success) {
       // 弹出可爱风格的验证码弹窗
-      const verifyCode = response.data
+      const { verifyCode } = response.data
 
       // 创建一个自定义弹窗 DOM 并挂载
       const dialog = document.createElement('div')
