@@ -17,7 +17,8 @@
       "Bash(set DATABASE_URL:*)",
       "Bash(npm install @prisma/adapter-mysql mysql2)",
       "Bash(npm install mysql2)",
-      "Bash(npm install mysql2 @prisma/adapter-mysql)"
+      "Bash(npm install mysql2 @prisma/adapter-mysql)",
+      "Bash(npm run type-check)"
     ]
   }
 }
