@@ -22,6 +22,11 @@
 
 ### 后端 (Backend)
 
-*(待完善)*
+1. 进入目录：`cd backend`
+2. 安装依赖：`npm install`
+3. 初始化数据库：`npx prisma migrate dev`
+4. 生成 Prisma Client：`npx prisma generate`
+5. 启动项目：`npm run dev`
 
+> 💡 可选：使用 `npx prisma studio` 打开可视化数据库管理界面
 ---
